@@ -140,6 +140,17 @@ class CitySpider(scrapy.Spider):
         # cost of living index
         item['cost_of_living_index'] = response.xpath('//*[@id="cost-of-living-index"]/text()')[0].extract()[1:][:-1].replace(",", "")
 
+        # unemployment_rate
+        item['unemployment_rate'] = response.xpath('//*[@id="unemployment"]/div/table/tr[1]/td[2]/text()')[0].extract()[:-1]
+
+        # High school or higher
+        item['high_school_degree_or_higher'] = response.xpath('//*[@id="education-info"]/ul/li[1]/text()')[0].extract()[1:][:-1]
+
+        # Bachelor's degree or higher
+        item['bachelors_degree_or_higher'] = response.xpath('//*[@id="education-info"]/ul/li[2]/text()')[0].extract()[1:][:-1]
+
+        # Graduate or professional degree
+        item['graduate_or_professional_degree'] = response.xpath('//*[@id="education-info"]/ul/li[3]/text()')[0].extract()[1:][:-1]
 
         yield item
 

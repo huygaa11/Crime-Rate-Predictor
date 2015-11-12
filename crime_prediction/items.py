@@ -20,6 +20,10 @@ class City(scrapy.Item):
     median_household_income = scrapy.Field()
     median_house_value = scrapy.Field()
     cost_of_living_index = scrapy.Field()
+    unemployment_rate = scrapy.Field()
+    high_school_degree_or_higher = scrapy.Field()
+    bachelors_degree_or_higher = scrapy.Field()
+    graduate_or_professional_degree = scrapy.Field()
 
     #median_per_capita_income = scrapy.Field()
 
