@@ -1,4 +1,12 @@
 import scrapy
+import re
+
+from crime_prediction.items import City
+
+TEST_MODE = 1
+NUMBER_TEST_STATES = 3
+NUMBER_TEST_CITIES = 2
+
 
 class CitySpider(scrapy.Spider):
     name = "city"
@@ -34,30 +42,109 @@ class CitySpider(scrapy.Spider):
 
 
         ### Extract links to cities
-        # for ind in range (0, len(self.all_states_links)):
-        for ind in range (0, len(self.all_states_links) - 1):
-            yield scrapy.Request(self.all_states_links[ind], callback=self.get_city_links)
+        ### big cities (excluded small cities)
+        if (TEST_MODE == 1):
+            for ind in range (0, NUMBER_TEST_STATES):
+                yield scrapy.Request(self.all_states_links[ind], callback=self.get_city_links)
+        else:
+            for ind in range (0, len(self.all_states_links) - 1):
+                yield scrapy.Request(self.all_states_links[ind], callback=self.get_city_links)
 
-        
+        ### small cities
+        ### yield scrapy.Request(self.all_states_links[len(self.all_states_links) - 1], callback=self.get_city_links)
 
 
     def get_city_links(self, response):
 
         cities_links = response.xpath('//*[@class="rB"]//a/@href').extract()
 
+        # for ind in range (0, len(cities_links)):
         for ind in range (0, len(cities_links)):
             cities_links[ind] = 'http://www.city-data.com/city/' + cities_links[ind]
 
-        self.all_cities_links = self.all_cities_links + cities_links
+        if (TEST_MODE == 1):
+            for ind in range (0, NUMBER_TEST_CITIES):
+                yield scrapy.Request(cities_links[ind], callback=self.parse_data_from_city)
+        else:
+            for ind in range (0, len(cities_links)):
+                yield scrapy.Request(cities_links[ind], callback=self.parse_data_from_city)
 
+        # self.all_cities_links = self.all_cities_links + cities_links
+
+        """
         self.finished_states += 1;
 
-        if self.finished_states == len(self.all_states_links) - 1:
-            # print self.all_cities_links
-            print self.all_states_links
-            print len(self.all_cities_links)
+        if (TEST_MODE == 1):
+            # if self.finished_states == len(self.all_states_links) - 1:
+            if self.finished_states == 1:
+                for ind in range (0, TEST_CITIES):
+                    yield scrapy.Request(self.all_cities_links[ind], callback=self.parse_data_from_city)
+        else:
+            # if self.finished_states == len(self.all_states_links) - 1:
+            if self.finished_states == len(self.all_states_links) - 1:
+                for ind in range (0, len(self.all_cities_links)):
+                    yield scrapy.Request(self.all_cities_links[ind], callback=self.parse_data_from_city)
+        """
+
+    def parse_data_from_city(self, response):
+        name = response.xpath('//*[@class="city"]/span/text()').extract()
+
+        # state and city name
+        item = City()
+        item['name'] = name[0].split(",")[0]
+        item['state'] = name[0].split(",")[1][1:]
+
+        # race_names = response.xpath('//*[@title="Races"]/ul/li[2]/ul/li/b/text()').extract()
+        # race_percentages = response.xpath('//*[@title="Races"]/ul/li[2]/ul/li/span[1]/text()').extract()
+
+        # for ind in range (0, len(race_names)):
+        #     if race_names[ind] == 'White alone':
+        #        item['white_alone'] = race_percentages[ind]  
+        # item['white_alone'] = races[0]
+        # item['hispanic'] = races[1]
+        # item['asian_alone'] = races[2]
+        # item['two_or_more_races'] = races[3]
+        # item['american_indian_alone'] = races[4]
+        # item['black_alone'] = races[5]
+        # item['native_hawaiian_and_other_pacific_islander_alone'] = races[6]
+        # item['other_race_alone'] = races[7]
+
+        #races = response.xpath('//*[@title="Races"]/ul/li[2]/ul/li/span[1]/text()').extract()
+
+        # gender percentage
+        genders = response.xpath('//*[@id="population-by-sex"]/div/table/tr')
+        item['percentage_male'] = genders[0].xpath('td[2]/text()').extract()[0].encode('utf-8')[3:][:-2]
+        item['percentage_female'] = genders[1].xpath('td[2]/text()').extract()[0].encode('utf-8')[3:][:-2]
+        
+        # population
+
+        male_population = genders[0].xpath('td[1]/text()').extract()[0].encode('utf-8')[1:][:-2]
+        female_population = genders[1].xpath('td[1]/text()').extract()[0].encode('utf-8')[1:][:-2]
+
+        item['population'] = 0 + int (male_population.replace(",", "")) + int(female_population.replace(",", ""))
+
+        # median age
+
+        item['median_age'] = response.xpath('//*[@id="median-age"]/div/table/tr[1]/td[2]/text()')[0].extract().encode('utf-8')[2:][:-6]
+        
+        # median household income 
+        item['median_household_income'] = response.xpath('//*[@id="median-income"]/div[1]/table/tr[1]/td[2]/text()')[0].extract().encode('utf-8')[1:].replace(",", "")
+
+        # median per capita income
+        # item['median_per_capita_income'] = response.xpath('//*[@id="median-income"]/text()')[5].extract()
+
+        # estimated median house value
+
+        item['median_house_value'] = response.xpath('//*[@id="median-income"]/div[2]/table/tr[1]/td[2]/text()')[0].extract()[1:].replace(",", "")
+
+        # cost of living index
+        item['cost_of_living_index'] = response.xpath('//*[@id="cost-of-living-index"]/text()')[0].extract()[1:][:-1].replace(",", "")
+
+
+        yield item
 
         
+
         
 
 

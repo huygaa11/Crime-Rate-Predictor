@@ -8,9 +8,29 @@
 import scrapy
 
 
-class CrimePredictionItem(scrapy.Item):
+class City(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    title = scrapy.Field()
-    
+    state = scrapy.Field()
+    name = scrapy.Field()
+    percentage_male = scrapy.Field()
+    percentage_female = scrapy.Field()
+    population = scrapy.Field()
+    median_age = scrapy.Field()
+    median_household_income = scrapy.Field()
+    median_house_value = scrapy.Field()
+    cost_of_living_index = scrapy.Field()
+
+    #median_per_capita_income = scrapy.Field()
+
+    # percentages
+    # white_alone = scrapy.Field()
+    # hispanic = scrapy.Field()
+    # asian_alone = scrapy.Field()
+    # two_or_more_races = scrapy.Field()
+    # american_indian_alone = scrapy.Field()
+    # black_alone = scrapy.Field()
+    # native_hawaiian_and_other_pacific_islander_alone = scrapy.Field()
+    # other_race_alone = scrapy.Field()
+
     pass
