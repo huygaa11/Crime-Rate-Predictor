@@ -24,6 +24,7 @@ class City(scrapy.Item):
     high_school_degree_or_higher = scrapy.Field()
     bachelors_degree_or_higher = scrapy.Field()
     graduate_or_professional_degree = scrapy.Field()
+    crime_rate = scrapy.Field()
 
     #median_per_capita_income = scrapy.Field()
 
@@ -33,5 +34,7 @@ class City(scrapy.Item):
     asian_alone = scrapy.Field()
     american_indian_alone = scrapy.Field()
     black_alone = scrapy.Field()
+
+
 
     pass

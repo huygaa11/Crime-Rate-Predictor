@@ -4,8 +4,8 @@ import re
 from crime_prediction.items import City
 
 TEST_MODE = 1
-NUMBER_TEST_STATES = 3
-NUMBER_TEST_CITIES = 2
+NUMBER_TEST_STATES = 15
+NUMBER_TEST_CITIES = 15
 
 
 class CitySpider(scrapy.Spider):
@@ -14,6 +14,8 @@ class CitySpider(scrapy.Spider):
     start_urls = [
         "http://www.city-data.com/",
     ]
+
+    DOWNLOAD_DELAY = 0.5
 
     all_states_links = []
     all_states_initials = []
@@ -157,7 +159,20 @@ class CitySpider(scrapy.Spider):
         # Graduate or professional degree
         item['graduate_or_professional_degree'] = response.xpath('//*[@id="education-info"]/ul/li[3]/text()')[0].extract()[1:][:-1]
 
-        yield item
+        # Crime rate
+
+        crime_rates = response.xpath('//*[@id="crime"]/div[1]/table/tfoot/tr/td/text()')
+
+
+
+        
+
+        if len(crime_rates) > 0:
+            item['crime_rate'] = crime_rates[len(crime_rates) - 1].extract()
+            print crime_rates
+            print item['crime_rate']
+
+            yield item
 
         
 
