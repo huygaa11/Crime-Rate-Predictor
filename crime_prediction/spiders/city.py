@@ -3,7 +3,7 @@ import re
 
 from crime_prediction.items import City
 
-TEST_MODE = 1
+TEST_MODE = 0
 NUMBER_TEST_STATES = 15
 NUMBER_TEST_CITIES = 15
 
@@ -15,7 +15,7 @@ class CitySpider(scrapy.Spider):
         "http://www.city-data.com/",
     ]
 
-    DOWNLOAD_DELAY = 0.5
+    DOWNLOAD_DELAY = 0.6
 
     all_states_links = []
     all_states_initials = []
