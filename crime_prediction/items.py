@@ -27,14 +27,11 @@ class City(scrapy.Item):
 
     #median_per_capita_income = scrapy.Field()
 
-    # percentages
-    # white_alone = scrapy.Field()
-    # hispanic = scrapy.Field()
-    # asian_alone = scrapy.Field()
-    # two_or_more_races = scrapy.Field()
-    # american_indian_alone = scrapy.Field()
-    # black_alone = scrapy.Field()
-    # native_hawaiian_and_other_pacific_islander_alone = scrapy.Field()
-    # other_race_alone = scrapy.Field()
+    # races
+    white_alone = scrapy.Field()
+    hispanic = scrapy.Field()
+    asian_alone = scrapy.Field()
+    american_indian_alone = scrapy.Field()
+    black_alone = scrapy.Field()
 
     pass

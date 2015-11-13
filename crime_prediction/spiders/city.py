@@ -94,22 +94,27 @@ class CitySpider(scrapy.Spider):
         item['name'] = name[0].split(",")[0]
         item['state'] = name[0].split(",")[1][1:]
 
-        # race_names = response.xpath('//*[@title="Races"]/ul/li[2]/ul/li/b/text()').extract()
-        # race_percentages = response.xpath('//*[@title="Races"]/ul/li[2]/ul/li/span[1]/text()').extract()
+        race_names = response.xpath('//*[@id="races-graph"]/ul/li[2]/ul/li/b/text()').extract()
+        race_percentages = response.xpath('//*[@id="races-graph"]/ul/li[2]/ul/li/span[2]/text()').extract()
 
-        # for ind in range (0, len(race_names)):
-        #     if race_names[ind] == 'White alone':
-        #        item['white_alone'] = race_percentages[ind]  
-        # item['white_alone'] = races[0]
-        # item['hispanic'] = races[1]
-        # item['asian_alone'] = races[2]
-        # item['two_or_more_races'] = races[3]
-        # item['american_indian_alone'] = races[4]
-        # item['black_alone'] = races[5]
-        # item['native_hawaiian_and_other_pacific_islander_alone'] = races[6]
-        # item['other_race_alone'] = races[7]
 
-        #races = response.xpath('//*[@title="Races"]/ul/li[2]/ul/li/span[1]/text()').extract()
+        item['white_alone'] = 0
+        item['hispanic'] = 0
+        item['asian_alone'] = 0
+        item['american_indian_alone'] = 0
+        item['black_alone'] = 0
+
+        for ind in range (0, len(race_names)):
+            if race_names[ind] == 'White alone':
+               item['white_alone'] = race_percentages[ind][:-1]
+            elif race_names[ind] == 'Hispanic':
+               item['hispanic'] = race_percentages[ind][:-1]  
+            elif race_names[ind] == 'Asian alone':
+               item['asian_alone'] = race_percentages[ind][:-1]   
+            elif race_names[ind] == 'American Indian alone':
+               item['american_indian_alone'] = race_percentages[ind][:-1] 
+            elif race_names[ind] == 'Black alone':
+               item['black_alone'] = race_percentages[ind][:-1] 
 
         # gender percentage
         genders = response.xpath('//*[@id="population-by-sex"]/div/table/tr')
